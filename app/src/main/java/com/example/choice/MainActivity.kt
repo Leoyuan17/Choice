@@ -1,5 +1,7 @@
 package com.example.choice
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -20,7 +22,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.animation.core.*
 import kotlinx.coroutines.delay
-
 
 
 class MainActivity : ComponentActivity() {
@@ -44,6 +45,7 @@ fun MyComposeApp() {
     val saveButtonColor by remember { mutableStateOf(Color.Unspecified) }
     val chooseButtonColor by remember { mutableStateOf(Color.Unspecified) }
     val clearButtonColor by remember { mutableStateOf(Color.Unspecified) }
+    var openMapDialog by remember { mutableStateOf(false) }
 
     // Animation setup
     val infiniteTransition = rememberInfiniteTransition()
@@ -52,8 +54,7 @@ fun MyComposeApp() {
         targetValue = savedInputs.value.size,
         typeConverter = Int.VectorConverter,
         animationSpec = infiniteRepeatable(
-            animation = tween(100, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+            animation = tween(100, easing = LinearEasing), repeatMode = RepeatMode.Restart
         )
     )
 
@@ -70,23 +71,20 @@ fun MyComposeApp() {
         )
 
         // Input field
-        OutlinedTextField(
-            value = userInput,
+        OutlinedTextField(value = userInput,
             onValueChange = { userInput = it },
-            label = { Text("想要吃的") }
-        )
+            label = { Text("想要吃的") })
 
         // Buttons row
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
                 onClick = {
                     if (userInput.isNotBlank()) {
                         savedInputs.value = savedInputs.value + userInput
                         userInput = ""
-                    }else{
+                    } else {
                         Toast.makeText(context, "沒東西是要吃啥", Toast.LENGTH_SHORT).show()
                     }
                 },
@@ -99,7 +97,13 @@ fun MyComposeApp() {
             Button(
                 onClick = {
                     if (savedInputs.value.isNotEmpty()) {
-                        animating = true
+                        if (savedInputs.value.size == 1) {
+                            answer = savedInputs.value.first()
+                            Toast.makeText(context, "今天就吃 $answer", Toast.LENGTH_LONG).show()
+                            openMapDialog = true
+                        } else {
+                            animating = true
+                        }
                     } else {
                         Toast.makeText(context, "吃土去", Toast.LENGTH_SHORT).show()
                     }
@@ -113,7 +117,21 @@ fun MyComposeApp() {
 
             Button(
                 onClick = {
-                    if (userInput.isBlank() && answer.isBlank()) {
+                    if (answer.isNotBlank()) {
+                        userInput = ""
+                        answer = ""
+                        Toast.makeText(context, "再給你一次機會", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = clearButtonColor),
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("這把不算")
+            }
+
+            Button(
+                onClick = {
+                    if (savedInputs.value.isEmpty()) {
                         Toast.makeText(context, "快點想", Toast.LENGTH_SHORT).show()
                     } else {
                         userInput = ""
@@ -126,7 +144,7 @@ fun MyComposeApp() {
                 colors = ButtonDefaults.buttonColors(backgroundColor = clearButtonColor),
                 modifier = Modifier.weight(1f)
             ) {
-                Text("這把不算")
+                Text("重頭再來")
             }
         }
 
@@ -138,17 +156,18 @@ fun MyComposeApp() {
         )
 
         // Answer text
-        if (animating) {
-            LaunchedEffect(key1 = true) {
+        if (animating && savedInputs.value.isNotEmpty()) {
+            LaunchedEffect(key1 = savedInputs.value) {
                 val startTime = System.currentTimeMillis()
-                while (animating && System.currentTimeMillis() - startTime < 5000) {
+                while (animating && System.currentTimeMillis() - startTime < 3000 && savedInputs.value.isNotEmpty()) {
                     currentIndex = animatedValue.value % savedInputs.value.size
-                    delay(100)  // Change display every 100 ms
+                    delay(100)
                 }
                 animating = false
                 if (savedInputs.value.isNotEmpty()) {
                     answer = savedInputs.value.random()
                     Toast.makeText(context, "今天就吃 $answer", Toast.LENGTH_LONG).show()
+                    openMapDialog = true
                 }
             }
             if (savedInputs.value.isNotEmpty()) {
@@ -159,9 +178,29 @@ fun MyComposeApp() {
             }
         } else {
             Text(
-                text = answer,
-                style = TextStyle(fontSize = 80.sp, color = Color.Blue)
+                text = answer, style = TextStyle(fontSize = 80.sp, color = Color.Blue)
             )
+        }
+        if (openMapDialog && answer.isNotEmpty()) {
+            AlertDialog(onDismissRequest = {  },
+                title = { Text("確認") },
+                text = { Text("是否要在Google地圖中搜尋「$answer」？") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        openMapDialog = false
+                        val gmmIntentUri = Uri.parse("geo:0,0?q=$answer")
+                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                        mapIntent.setPackage("com.google.android.apps.maps")
+                        context.startActivity(mapIntent)
+                    }) {
+                        Text("確定")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { openMapDialog = false }) {
+                        Text("取消")
+                    }
+                })
         }
     }
 }
