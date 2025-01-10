@@ -1,0 +1,89 @@
+What to Eat Today
+
+"What to Eat Today" is an Android app designed to help users decide what to eat. By adding options, random selection, and Google Maps search functionality, it solves the everyday dilemma of meal choices.
+
+Features
+
+Add Options: Enter what you want to eat and add it to the candidate list.
+
+Random Selection: Use animated effects to randomly choose one option and provide a Google Maps search link.
+
+Clear Options: Reset all options and start fresh.
+
+Cancel Result: If unsatisfied with the result, choose again.
+
+Screenshots
+
+(Add screenshots of the app here to showcase its main features.)
+
+Installation
+
+Clone this repository:
+
+git clone https://github.com/leoyuan17/choice.git
+
+Open Android Studio, select "Open an Existing Project," and choose the project directory.
+
+Sync Gradle and run the project.
+
+Technologies Used
+
+Language: Kotlin
+
+UI: Jetpack Compose
+
+Map Functionality: Google Maps
+
+Tools & Frameworks:
+
+Android Studio
+
+Gradle
+
+Coroutine
+
+Usage
+
+After launching the app, enter what you want to eat in the input field and click Add to List.
+
+Click Let Fate Decide to start a random selection.
+
+If satisfied with the result, click the dialog box to search for the selected option on Google Maps.
+
+If you want to reselect, click This Doesn't Count or Start Over.
+
+Permissions
+
+This app requires the following permissions:
+
+INTERNET: To access Google Maps.
+
+ACCESS_FINE_LOCATION: For location services.
+
+ACCESS_COARSE_LOCATION: To enhance map services.
+
+Contributing
+
+Contributions are welcome! Here's how you can help:
+
+Fork this repository.
+
+Create your branch: git checkout -b feature/your-feature.
+
+Commit your changes: git commit -m 'Add new feature'.
+
+Push to the branch: git push origin feature/your-feature.
+
+Submit a Pull Request.
+
+Contact
+
+If you have any questions, feel free to reach out:
+
+Email: leoyuan17@gmail.com
+
+GitHub: leoyuan17
+
+License
+
+This project is licensed under the MIT License.
