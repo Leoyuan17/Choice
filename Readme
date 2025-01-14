@@ -12,9 +12,6 @@ Clear Options: Reset all options and start fresh.
 
 Cancel Result: If unsatisfied with the result, choose again.
 
-Screenshots
-
-(Add screenshots of the app here to showcase its main features.)
 
 Installation
 
@@ -62,19 +59,6 @@ ACCESS_FINE_LOCATION: For location services.
 
 ACCESS_COARSE_LOCATION: To enhance map services.
 
-Contributing
-
-Contributions are welcome! Here's how you can help:
-
-Fork this repository.
-
-Create your branch: git checkout -b feature/your-feature.
-
-Commit your changes: git commit -m 'Add new feature'.
-
-Push to the branch: git push origin feature/your-feature.
-
-Submit a Pull Request.
 
 Contact
 
